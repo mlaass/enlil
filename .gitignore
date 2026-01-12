@@ -1,0 +1,44 @@
+# Build artifacts
+build/
+bin/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.lib
+*.pdb
+
+# SCons
+.sconsign.dblite
+*.pyc
+__pycache__/
+custom.py
+
+# Godot
+.godot/
+*.import
+export_presets.cfg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Plugin output
+*.vst3/
+*.clap
+*.lv2/
+*.component/
+
+# Debug
+*.log
+core
+core.*
+*.os

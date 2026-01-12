@@ -1,0 +1,14 @@
+[configuration]
+entry_symbol = "fatsat_library_init"
+compatibility_minimum = "4.5"
+reloadable = true
+
+[libraries]
+linux.debug.x86_64 = "res://bin/libfatsat_bridge.linux.template_debug.x86_64.so"
+linux.release.x86_64 = "res://bin/libfatsat_bridge.linux.template_release.x86_64.so"
+windows.debug.x86_64 = "res://bin/libfatsat_bridge.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "res://bin/libfatsat_bridge.windows.template_release.x86_64.dll"
+macos.debug = "res://bin/libfatsat_bridge.macos.template_debug.framework"
+macos.release = "res://bin/libfatsat_bridge.macos.template_release.framework"
+macos.debug.arm64 = "res://bin/libfatsat_bridge.macos.template_debug.arm64.dylib"
+macos.release.arm64 = "res://bin/libfatsat_bridge.macos.template_release.arm64.dylib"
