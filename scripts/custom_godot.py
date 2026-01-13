@@ -1,61 +1,68 @@
 """
 Custom Godot Build Options for Enlil/GodotVST Framework
 
-This configuration strips Godot to ~30MB by disabling unused features.
-Copy relevant options to godot/custom.py before building.
+This configuration strips Godot to <30MB by disabling unused features.
+Copy to godot/custom.py or pass as SCons arguments.
+
+Target: <30MB stripped shared library for VST plugin UI
 """
 
-# Build as shared library for embedding
+# Build type
 library_type = "shared_library"
-
-# Optimization
+target = "template_release"
 optimize = "size"
 debug_symbols = "no"
 deprecated = "no"
+production = "yes"
 
 # Disable 3D (major size reduction)
 disable_3d = "yes"
 
 # Disable physics (not needed for UI)
-module_bullet_enabled = "no"
-module_godot_physics_2d_enabled = "no"
-module_godot_physics_3d_enabled = "no"
+disable_physics_2d = "yes"
+disable_navigation_2d = "yes"
 
-# Disable navigation (not needed)
-module_navigation_enabled = "no"
+# Disable Vulkan (use OpenGL only for 2D, ~5-10MB savings)
+vulkan = "no"
+use_volk = "no"
 
-# Disable XR (not needed)
-module_webxr_enabled = "no"
-module_openxr_enabled = "no"
+# Disable SDL input (DPF handles input)
+sdl = "no"
 
-# Disable multiplayer/networking (not needed)
-module_multiplayer_enabled = "no"
-module_enet_enabled = "no"
-module_websocket_enabled = "no"
-module_upnp_enabled = "no"
-module_mbedtls_enabled = "no"
+# Disable accessibility SDK (VST host handles this)
+accesskit = "no"
 
-# Use simple text server (smaller than advanced)
-module_text_server_adv_enabled = "no"
-module_text_server_fb_enabled = "yes"
+# Disable Brotli (only needed for WOFF2 fonts)
+brotli = "no"
 
-# Disable heavy 3D formats
-module_gltf_enabled = "no"
-module_gridmap_enabled = "no"
-module_csg_enabled = "no"
-module_lightmapper_rd_enabled = "no"
+# Modules to disable
+module_bullet_enabled = "no"          # Physics
+module_navigation_enabled = "no"      # Navigation
+module_openxr_enabled = "no"          # XR
+module_multiplayer_enabled = "no"     # Multiplayer
+module_enet_enabled = "no"            # Networking
+module_websocket_enabled = "no"       # WebSocket
+module_text_server_adv_enabled = "no" # Advanced text (use fallback)
+module_theora_enabled = "no"          # Video playback
+module_vorbis_enabled = "no"          # Audio (DPF handles audio)
+module_ogg_enabled = "no"             # Audio containers
+module_noise_enabled = "no"           # Noise generation
+module_camera_enabled = "no"          # Camera access
+module_cvtt_enabled = "no"            # Texture compression
+module_squish_enabled = "no"          # DXT compression
+module_etcpak_enabled = "no"          # ETC compression
+module_astcenc_enabled = "no"         # ASTC compression
+module_basis_universal_enabled = "no" # Basis Universal textures
+module_miniupnpc_enabled = "no"       # UPnP networking
+module_mbedtls_enabled = "no"         # TLS/SSL
+module_upnp_enabled = "no"            # UPnP
+module_jsonrpc_enabled = "no"         # JSON-RPC
 
-# Disable unused texture formats
-module_basis_universal_enabled = "no"
-module_cvtt_enabled = "no"
-module_squish_enabled = "no"
-module_etcpak_enabled = "no"
-module_astcenc_enabled = "no"
-
-# Keep these enabled for UI
-module_gdscript_enabled = "yes"
-module_svg_enabled = "yes"
-module_freetype_enabled = "yes"
-
-# Production settings for release
-production = "yes"
+# Keep enabled (needed for UI)
+module_freetype_enabled = "yes"       # Font rendering
+module_svg_enabled = "yes"            # Vector graphics
+module_gdscript_enabled = "yes"       # Scripting
+module_regex_enabled = "yes"          # GDScript regex
+module_jpg_enabled = "yes"            # JPEG images
+module_webp_enabled = "yes"           # WebP images
+module_png_enabled = "yes"            # PNG images (implicit)

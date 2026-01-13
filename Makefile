@@ -11,8 +11,8 @@ JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
 # Default target
 all: bridge
 
-# Build LibGodot (stripped shared library, ~30 min)
-# Output: godot/bin/libgodot.linux.template_release.x86_64.so
+# Build LibGodot (stripped shared library, ~30 min, target <30MB)
+# Output: godot/bin/libgodot.linuxbsd.template_release.x86_64.so
 godot:
 	cd godot && scons \
 		platform=linux \
@@ -21,7 +21,15 @@ godot:
 		optimize=size \
 		debug_symbols=no \
 		deprecated=no \
+		production=yes \
 		disable_3d=yes \
+		disable_physics_2d=yes \
+		disable_navigation_2d=yes \
+		vulkan=no \
+		use_volk=no \
+		sdl=no \
+		accesskit=no \
+		brotli=no \
 		module_bullet_enabled=no \
 		module_navigation_enabled=no \
 		module_openxr_enabled=no \
@@ -29,6 +37,36 @@ godot:
 		module_enet_enabled=no \
 		module_websocket_enabled=no \
 		module_text_server_adv_enabled=no \
+		module_theora_enabled=no \
+		module_vorbis_enabled=no \
+		module_ogg_enabled=no \
+		module_noise_enabled=no \
+		module_camera_enabled=no \
+		module_cvtt_enabled=no \
+		module_squish_enabled=no \
+		module_etcpak_enabled=no \
+		module_astcenc_enabled=no \
+		module_basis_universal_enabled=no \
+		module_miniupnpc_enabled=no \
+		module_mbedtls_enabled=no \
+		module_upnp_enabled=no \
+		module_jsonrpc_enabled=no \
+		module_lightmapper_rd_enabled=no \
+		module_embree_enabled=no \
+		module_raycast_enabled=no \
+		module_meshoptimizer_enabled=no \
+		module_xatlas_unwrap_enabled=no \
+		module_glslang_enabled=no \
+		module_gltf_enabled=no \
+		module_gridmap_enabled=no \
+		module_csg_enabled=no \
+		module_hdr_enabled=no \
+		module_ktx_enabled=no \
+		module_tga_enabled=no \
+		module_bmp_enabled=no \
+		module_dds_enabled=no \
+		module_exr_enabled=no \
+		module_tinyexr_enabled=no \
 		-j$(JOBS)
 
 # Build LibGodot debug (for development)
@@ -38,6 +76,13 @@ godot-debug:
 		target=template_debug \
 		library_type=shared_library \
 		disable_3d=yes \
+		disable_physics_2d=yes \
+		disable_navigation_2d=yes \
+		vulkan=no \
+		use_volk=no \
+		sdl=no \
+		accesskit=no \
+		brotli=no \
 		module_bullet_enabled=no \
 		module_navigation_enabled=no \
 		module_openxr_enabled=no \
@@ -45,6 +90,36 @@ godot-debug:
 		module_enet_enabled=no \
 		module_websocket_enabled=no \
 		module_text_server_adv_enabled=no \
+		module_theora_enabled=no \
+		module_vorbis_enabled=no \
+		module_ogg_enabled=no \
+		module_noise_enabled=no \
+		module_camera_enabled=no \
+		module_cvtt_enabled=no \
+		module_squish_enabled=no \
+		module_etcpak_enabled=no \
+		module_astcenc_enabled=no \
+		module_basis_universal_enabled=no \
+		module_miniupnpc_enabled=no \
+		module_mbedtls_enabled=no \
+		module_upnp_enabled=no \
+		module_jsonrpc_enabled=no \
+		module_lightmapper_rd_enabled=no \
+		module_embree_enabled=no \
+		module_raycast_enabled=no \
+		module_meshoptimizer_enabled=no \
+		module_xatlas_unwrap_enabled=no \
+		module_glslang_enabled=no \
+		module_gltf_enabled=no \
+		module_gridmap_enabled=no \
+		module_csg_enabled=no \
+		module_hdr_enabled=no \
+		module_ktx_enabled=no \
+		module_tga_enabled=no \
+		module_bmp_enabled=no \
+		module_dds_enabled=no \
+		module_exr_enabled=no \
+		module_tinyexr_enabled=no \
 		-j$(JOBS)
 
 # Build godot-cpp bindings
