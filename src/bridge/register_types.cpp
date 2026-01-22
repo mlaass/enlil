@@ -5,6 +5,7 @@
 
 #include "register_types.hpp"
 #include "fatsat_bridge.hpp"
+#include "frame_bridge_gd.hpp"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -19,6 +20,7 @@ void initialize_fatsat_module(ModuleInitializationLevel p_level)
     }
 
     ClassDB::register_class<FatSatBridge>();
+    ClassDB::register_class<FrameBridgeGD>();
 }
 
 void uninitialize_fatsat_module(ModuleInitializationLevel p_level)

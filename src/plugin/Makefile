@@ -14,9 +14,12 @@ NAME = FatSat
 FILES_DSP = \
 	FatSatPlugin.cpp
 
-# UI disabled for now - will enable when Godot integration is ready
-# FILES_UI = \
-# 	FatSatUI.cpp
+# UI files for Godot-based interface
+# Include bridge sources directly since we register GDExtension classes in the plugin
+FILES_UI = \
+	FatSatUI.cpp \
+	../bridge/fatsat_bridge.cpp \
+	../bridge/frame_bridge_gd.cpp
 
 # --------------------------------------------------------------
 # DPF path (can be overridden)
@@ -28,6 +31,22 @@ DPF_PATH ?= ../../dpf
 
 DPF_BUILD_DIR ?= ../../build/plugin
 DPF_TARGET_DIR ?= ../../build/bin
+
+# --------------------------------------------------------------
+# godot-cpp integration for UI
+
+GODOT_CPP_PATH ?= ../../godot-cpp
+
+# Add include paths for godot-cpp, shared code, and bridge (using CXXFLAGS since DPF resets BUILD_CXX_FLAGS)
+CXXFLAGS += -I$(GODOT_CPP_PATH)/include
+CXXFLAGS += -I$(GODOT_CPP_PATH)/gen/include
+CXXFLAGS += -I$(GODOT_CPP_PATH)/gdextension
+CXXFLAGS += -I../shared
+CXXFLAGS += -I../bridge
+CXXFLAGS += -std=c++17
+
+# Add godot-cpp library and OpenGL for UI linking
+EXTRA_UI_LIBS += -L$(GODOT_CPP_PATH)/bin -lgodot-cpp.linux.template_release.x86_64 -ldl -lGL
 
 # --------------------------------------------------------------
 # Do some magic

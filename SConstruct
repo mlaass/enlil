@@ -131,6 +131,7 @@ bridge_env.Append(CPPPATH=[
     os.path.join(GODOT_CPP_PATH, 'gen', 'include'),
     os.path.join(GODOT_CPP_PATH, 'gdextension'),
     os.path.join(SRC_PATH, 'bridge'),
+    os.path.join(SRC_PATH, 'shared'),
 ])
 
 # Library paths and full library name
@@ -150,6 +151,7 @@ else:
 bridge_sources = [
     os.path.join(SRC_PATH, 'bridge', 'register_types.cpp'),
     os.path.join(SRC_PATH, 'bridge', 'fatsat_bridge.cpp'),
+    os.path.join(SRC_PATH, 'bridge', 'frame_bridge_gd.cpp'),
 ]
 
 # Build bridge library

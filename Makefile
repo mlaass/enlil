@@ -3,7 +3,7 @@
 # This wraps SCons for common build tasks.
 # Run 'make help' for available targets.
 
-.PHONY: all godot godot-editor godot-cpp extension-api bridge plugin libgodot-test run-libgodot-test clean help setup
+.PHONY: all godot godot-editor godot-cpp extension-api bridge plugin libgodot-test run-libgodot-test clean help setup test test-standalone test-lv2
 
 # Default number of parallel jobs
 JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
@@ -185,6 +185,19 @@ distclean: clean
 editor:
 	cd src/godot && ../../godot/bin/godot.* --editor
 
+# Test targets
+test: test-standalone
+
+# Run standalone with PipeWire JACK emulation
+test-standalone: plugin
+	@echo "Running FatSat standalone (press Ctrl+C to stop)..."
+	pw-jack ./build/bin/FatSat
+
+# Run LV2 plugin in jalv host
+test-lv2: plugin
+	@echo "Running FatSat LV2 in jalv (press Ctrl+C to stop)..."
+	pw-jack jalv ./build/bin/FatSat.lv2/FatSat.so
+
 # Help
 help:
 	@echo "Enlil/GodotVST Framework Build System"
@@ -207,6 +220,9 @@ help:
 	@echo "  clean           - Remove build artifacts"
 	@echo "  distclean       - Deep clean including submodules"
 	@echo "  editor          - Run Godot editor with plugin project"
+	@echo "  test            - Run plugin standalone with audio"
+	@echo "  test-standalone - Run JACK standalone via PipeWire"
+	@echo "  test-lv2        - Run LV2 plugin in jalv host"
 	@echo ""
 	@echo "Variables:"
 	@echo "  JOBS=N        - Number of parallel jobs (default: $(JOBS))"

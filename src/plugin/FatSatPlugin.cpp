@@ -5,6 +5,10 @@
 
 #include "FatSatPlugin.hpp"
 #include <cmath>
+#include <algorithm>
+
+// Shared DSP-UI bridge for visualization data
+#include "../shared/dsp_bridge.hpp"
 
 START_NAMESPACE_DISTRHO
 
@@ -105,7 +109,22 @@ void FatSatPlugin::run(const float** inputs, float** outputs, uint32_t frames)
         outR[i] = sampleR;
     }
 
-    // TODO: Write RMS to lock-free ring buffer for UI visualization
+    // Calculate RMS and peak for visualization
+    float sumL = 0.0f, sumR = 0.0f;
+    float peakL = 0.0f, peakR = 0.0f;
+
+    for (uint32_t i = 0; i < frames; ++i) {
+        sumL += outL[i] * outL[i];
+        sumR += outR[i] * outR[i];
+        peakL = std::max(peakL, std::fabs(outL[i]));
+        peakR = std::max(peakR, std::fabs(outR[i]));
+    }
+
+    float rmsL = std::sqrt(sumL / frames);
+    float rmsR = std::sqrt(sumR / frames);
+
+    // Push to shared bridge for UI
+    enlil::DSPBridge::instance().pushVisualization(rmsL, rmsR, peakL, peakR);
 }
 
 Plugin* createPlugin()
