@@ -38,6 +38,8 @@ Uses SCons to compile:
 
 Target binary size: <30MB (stripped Godot)
 
+**Important:** Always use `make` targets for building - never run `scons` directly. Run `make help` to see available targets.
+
 ## Key Constraints
 
 - **Single binary distribution:** Godot .pck assets embedded as static byte array in C++

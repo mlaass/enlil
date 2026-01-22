@@ -3,7 +3,7 @@
 # This wraps SCons for common build tasks.
 # Run 'make help' for available targets.
 
-.PHONY: all godot godot-cpp bridge plugin clean help setup
+.PHONY: all godot godot-editor godot-cpp extension-api bridge plugin libgodot-test run-libgodot-test clean help setup
 
 # Default number of parallel jobs
 JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
@@ -20,13 +20,15 @@ godot:
 		library_type=shared_library \
 		optimize=size \
 		debug_symbols=no \
-		deprecated=no \
+		deprecated=yes \
 		production=yes \
-		disable_3d=yes \
-		disable_physics_2d=yes \
-		disable_navigation_2d=yes \
+		disable_path_overrides=no \
+		disable_3d=no \
+		disable_physics_2d=no \
+		disable_navigation_2d=no \
 		vulkan=no \
 		use_volk=no \
+		wayland=no \
 		sdl=no \
 		accesskit=no \
 		brotli=no \
@@ -80,6 +82,7 @@ godot-debug:
 		disable_navigation_2d=yes \
 		vulkan=no \
 		use_volk=no \
+		wayland=no \
 		sdl=no \
 		accesskit=no \
 		brotli=no \
@@ -122,12 +125,33 @@ godot-debug:
 		module_tinyexr_enabled=no \
 		-j$(JOBS)
 
+# Build Godot editor executable (needed for extension_api.json generation)
+godot-editor:
+	cd godot && scons \
+		platform=linux \
+		target=editor \
+		-j$(JOBS)
+
+# Generate extension_api.json from LibGodot and rebuild godot-cpp
+# This is needed when GodotInstance or other LibGodot-specific classes are missing from bindings
+extension-api: godot-editor
+	cd godot/bin && ./godot.linuxbsd.editor.x86_64 --dump-extension-api --headless
+	mv godot/bin/extension_api.json godot-cpp/gdextension/
+	cd godot-cpp && scons platform=linux target=template_release -j$(JOBS)
+
 # Build godot-cpp bindings
 godot-cpp:
 	cd godot-cpp && scons platform=linux target=template_release -j$(JOBS)
 
 godot-cpp-debug:
 	cd godot-cpp && scons platform=linux target=template_debug -j$(JOBS)
+
+# Build and run LibGodot test sample
+libgodot-test:
+	$(MAKE) -C src/shared/libgodot_test
+
+run-libgodot-test: libgodot-test
+	$(MAKE) -C src/shared/libgodot_test run
 
 # Build FatSat GDExtension bridge
 bridge:
@@ -169,8 +193,12 @@ help:
 	@echo "  all             - Build bridge (default)"
 	@echo "  godot           - Build LibGodot stripped (~30 min, ~25MB)"
 	@echo "  godot-debug     - Build LibGodot debug (~30 min)"
+	@echo "  godot-editor    - Build Godot editor (for extension-api)"
+	@echo "  extension-api   - Generate extension_api.json and rebuild godot-cpp"
 	@echo "  godot-cpp       - Build godot-cpp bindings (release)"
 	@echo "  godot-cpp-debug - Build godot-cpp bindings (debug)"
+	@echo "  libgodot-test   - Build LibGodot test sample"
+	@echo "  run-libgodot-test - Build and run LibGodot test sample"
 	@echo "  bridge          - Build FatSat GDExtension bridge"
 	@echo "  bridge-release  - Build bridge (optimized)"
 	@echo "  plugin          - Build FatSat VST3/CLAP/LV2 plugin"
